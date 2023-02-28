@@ -23,8 +23,8 @@ def register_user():
     input_id= input('please enter your name or 3 digits: ')
     try:
         register_request = f'register_user {input_id}'.encode('utf-8')
-        user_socket.sendall(register_request) # блокирующая функция
-        response = user_socket.recv(4096).decode('utf-8') # блокирующая функция
+        user_socket.sendall(register_request)
+        response = user_socket.recv(4096).decode('utf-8')
         print(response)
         if response == 'Success registration':
             user_id = input_id
@@ -38,7 +38,7 @@ def register_user():
 def get_active_users():
     try:
         get_active_users_request ='get_active_users'.encode('utf-8')
-        user_socket.sendall(get_active_users_request) # блокирующая функция
+        user_socket.sendall(get_active_users_request)
         active_users = user_socket.recv(4096)
         print(active_users.decode('utf-8'))
     except:
@@ -48,7 +48,7 @@ def get_active_users():
 def get_active_chats():
     try:
         get_active_chats_request ='get_active_chats'.encode('utf-8')
-        user_socket.sendall(get_active_chats_request) # блокирующая функция
+        user_socket.sendall(get_active_chats_request)
         active_chats = user_socket.recv(4096)
         print(active_chats.decode('utf-8'))
     except:
@@ -58,7 +58,7 @@ def get_active_chats():
 def create_chat(args):
     chat_name = args[0]
     try:
-        create_chat_request = f'create_chat {chat_name}'.encode('utf-8') # блокирующая функция
+        create_chat_request = f'create_chat {chat_name}'.encode('utf-8')
         user_socket.sendall(create_chat_request)
         response = user_socket.recv(4096)
         print(response.decode('utf-8'))
@@ -69,7 +69,7 @@ def create_chat(args):
 def open_chat(args):
     chat_name = args[0]
     try:
-        open_chat_request = f'open_chat {chat_name}'.encode('utf-8') # блокирующая функция
+        open_chat_request = f'open_chat {chat_name}'.encode('utf-8')
         user_socket.sendall(open_chat_request)
         response = user_socket.recv(4096)
         print(response.decode('utf-8'))
@@ -81,7 +81,7 @@ def send_in_chat(args):
     chat_name = args[0]
     message = ' '.join(args[1:]) if len(args) > 2 else args[1]
     try:
-        send_in_chat_request = f'send_in_chat {chat_name} {message}'.encode('utf-8') # блокирующая функция
+        send_in_chat_request = f'send_in_chat {chat_name} {message}'.encode('utf-8')
         user_socket.sendall(send_in_chat_request)
         response = user_socket.recv(4096)
         print(response.decode('utf-8'))
@@ -125,66 +125,5 @@ def run_client():
             print('Undefined command. Use \'helpme\' for getting all commands')
 
 
-# base using:
-# connect_to_server()
-# register_user()
-# get_active_users()
-# chats_event_loop()
-# end_programm()
-
-# Пользователь может создать чат (create_chat), пользователь может подсоединиться к уже существующему чату (open_chat), пользователь может писать в чат (send_in_chat)
-
-
-
 if __name__ == "__main__":
     run_client()
-
-
-
-
-
-
-
-
-
-#свалка:
-
-# Пока что реализуем такую схему:
-# Диалог всегда начинает первый пользователь
-# Первый пользователь написал, а затем он ждет ответа второго пользователя
-# Второй пользователь написал, а затем он ждет ответа от первого пользователя
-# И так далее
-
-
-
-
-
-
-# tasks = []
-# to_read = {}
-# to_write = {}
-# def start_chat_with(user_id):
-#     user_socket.sendall(user_id.encode('utf-8')) # блокирующая функция
-#     control_message = user_socket.recv(4096).decode('utf-8') # блокирующая функция
-#     if control_message in ('yes', 'Yes'):
-#         pass
-#     else:
-#         print(f'User {user_id} don\'t want chat with you')
-
-
-# def chats_event_loop():
-
-#     while any([tasks, to_read, to_write]):
-
-#         while not tasks:
-
-#             ready_to_read, ready_to_write, _ = select(to_read, to_write, [])
-
-#             for sock in ready_to_read:
-#                 pass
-
-#             for sock in ready_to_write:
-#                 pass
-
-#         task = tasks.pop(0)
-#         next(task)
