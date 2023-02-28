@@ -108,7 +108,6 @@ all_commands = {
     'send_in_chat': send_in_chat,
 }
 
-# chat_commands = ['send_to']
 
 # kernel functions:
 
@@ -118,9 +117,8 @@ def server():
     server_socket.listen(4)
 
     while True:
-        # accept connection
         yield ('read', server_socket)
-        client_socket, address = server_socket.accept() # блокирующая функция
+        client_socket, address = server_socket.accept()
         tasks.append(client(client_socket))
 
 
@@ -128,21 +126,16 @@ def client(client_socket):
 
     while True:
         yield ('read', client_socket)
-        request = client_socket.recv(4096).decode('utf-8') # блокирующая функция; request = 'command argument';
+        request = client_socket.recv(4096).decode('utf-8')
         if not request:
             break
         else:
             command, *arguments = request.split()
-            # if not (command in chat_commands):
             response = all_commands[command](client_socket, arguments)
             yield ('write', client_socket)
             client_socket.sendall(response.encode('utf-8'))
-            # else:
-            #     tasks.append(all_commands[command](client_socket, arguments))
 
     client_socket.close()
-
-        # tasks.append(all_commands[command](client_socket, argument))
 
 
 # kernel
@@ -175,44 +168,8 @@ def event_loop():
         except StopIteration:
             pass
 
-
-
-
+        
 
 if __name__ == '__main__':
     tasks.append(server())
     event_loop()
-
-
-# Свалка:
-
-            # task = tasks.pop(0)
-            # try:
-            #     reason, sock = next(task)
-            # except TypeError:
-            #     pass
-            # else:
-            #     if reason == 'read':
-            #         to_read[sock] = task
-
-            #     if reason == 'write':
-            #         to_write[sock] = task
-
-# def send_to(client_socket, args):
-#     user_id = args[0]
-#     message = args[1]
-#     for user in active_users:
-#         if user.socket is client_socket:
-#             sender = user.id
-#         if user.id == user_id:
-#             reciever_socket = user.socket
-#     msg = f'{sender}: {message}'.encode('utf-8')
-#     yield ('write', reciever_socket)
-#     reciever_socket.sendall(msg) # блокирующая функция
-
-
-    # socket = create_server_socket()
-    # client_socket = accept_connection(socket)
-    # register_user(client_socket)
-    # print(active_users)
-    # end_programm()
